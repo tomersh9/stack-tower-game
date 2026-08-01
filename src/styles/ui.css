@@ -78,6 +78,30 @@ body {
 	mix-blend-mode: screen;
 }
 
+/* ── Floating streak-bonus coins ───────────────────────────── */
+.floating-coins {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 5;
+	overflow: hidden;
+}
+.floating-coin {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-family: var(--display);
+	font-weight: 800;
+	font-size: 34px;
+	color: var(--gold);
+	text-shadow: 0 2px 14px rgba(0, 0, 0, 0.4);
+	white-space: nowrap;
+	will-change: transform, opacity;
+}
+
 /* ── HUD ────────────────────────────────────────────────── */
 .hud {
 	position: fixed;
@@ -281,7 +305,7 @@ body {
 	z-index: -1;
 }
 .over > * {
-	width: min(360px, calc(100vw - 48px));
+	width: min(420px, calc(100vw - 48px));
 }
 .over > .badge {
 	width: auto;
@@ -291,31 +315,20 @@ body {
 	font-weight: 800;
 	font-size: clamp(34px, 9vw, 52px);
 	letter-spacing: -0.03em;
-	margin: 0 0 8px;
+	margin: 0 0 30px;
 	text-shadow: 0 4px 26px var(--hud-veil);
 	opacity: 0;
 	animation: overRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
 }
-.over__reason {
-	font-family: var(--body);
-	font-size: 14px;
-	line-height: 1.5;
-	color: var(--hud);
-	opacity: 0;
-	text-shadow: 0 2px 16px var(--hud-veil);
-	margin: 0 0 26px;
-	max-width: 30ch;
-	animation: overRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.14s forwards;
-}
 .over__stats {
 	display: flex;
 	justify-content: center;
-	margin-bottom: 30px;
+	margin-bottom: 36px;
 	opacity: 0;
 	animation: overRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.24s forwards;
 }
 .over__stat {
-	padding: 0 20px;
+	padding: 0 22px;
 }
 .over__stat + .over__stat {
 	border-left: 1px solid color-mix(in srgb, var(--hud) 25%, transparent);
@@ -324,18 +337,22 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 6px;
+	gap: 8px;
 	font-family: var(--mono);
-	font-weight: 300;
-	font-size: clamp(24px, 6vw, 32px);
+	font-weight: 400;
+	font-size: clamp(38px, 11vw, 54px);
 	letter-spacing: -0.02em;
 	text-shadow: 0 2px 20px var(--hud-veil);
 }
+.over__stat-value .coin-dot {
+	width: 22px;
+	height: 22px;
+}
 .over__stat small {
 	display: block;
-	margin-top: 6px;
+	margin-top: 8px;
 	font-family: var(--mono);
-	font-size: 10px;
+	font-size: 12px;
 	letter-spacing: 0.18em;
 	text-transform: uppercase;
 	opacity: 0.6;

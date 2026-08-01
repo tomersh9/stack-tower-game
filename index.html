@@ -15,6 +15,7 @@
 	<body data-ui="light">
 		<canvas id="scene"></canvas>
 		<div id="flash" class="flash"></div>
+		<div id="floating-coins" class="floating-coins"></div>
 
 		<div id="ui">
 			<!-- ── HUD ───────────────────────────────────────────── -->
@@ -67,9 +68,8 @@
 			<section id="over" class="over hidden">
 				<div id="over-newbest" class="badge hidden">new best</div>
 				<h2 id="over-title" class="over__title">Missed</h2>
-				<p id="over-reason" class="over__reason">The block found nothing to land on.</p>
 				<div class="over__stats">
-					<div class="over__stat"><span id="over-score" class="over__stat-value">0</span><small>height</small></div>
+					<div class="over__stat"><span id="over-score" class="over__stat-value">0</span><small>score</small></div>
 					<div class="over__stat"><span id="over-best" class="over__stat-value">0</span><small>best</small></div>
 					<div class="over__stat">
 						<span id="over-coins" class="over__stat-value"><span class="coin-dot"></span>0</span><small>earned</small>

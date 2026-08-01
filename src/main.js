@@ -2,7 +2,8 @@ import './styles/ui.css';
 
 import { SceneSetup } from './core/SceneSetup.js';
 import { CameraRig } from './core/CameraRig.js';
-import { Tower } from './game/Tower.js';
+import { Tower, PLINTH_DEPTH } from './game/Tower.js';
+import { BLOCK_H } from './game/Block.js';
 import { DebrisField } from './game/Debris.js';
 import { Difficulty } from './game/Difficulty.js';
 import { Scoring } from './game/Scoring.js';
@@ -15,6 +16,7 @@ import { Overlay } from './ui/Overlay.js';
 import { Menu } from './ui/Menu.js';
 import { Shop } from './ui/Shop.js';
 import { GameOver } from './ui/GameOver.js';
+import { FloatingCoins } from './ui/FloatingCoins.js';
 
 // ── Wiring ──────────────────────────────────────────────────
 const canvas = document.getElementById('scene');
@@ -27,6 +29,7 @@ const sceneSetup = new SceneSetup(canvas);
 const rig = new CameraRig(sceneSetup.camera);
 const debris = new DebrisField(sceneSetup.scene);
 const tower = new Tower(sceneSetup.scene, debris);
+const floatingCoins = new FloatingCoins(sceneSetup.camera);
 
 const difficulty = new Difficulty();
 const scoring = new Scoring();
@@ -121,6 +124,7 @@ function startRun() {
 	shop.show(false);
 
 	debris.clear();
+	floatingCoins.clear();
 	scoring.reset();
 	lastTier = 0;
 	tower.reset(economy.equippedSkin());
@@ -165,7 +169,10 @@ function handleDrop() {
 		audio.perfect(scoring.combo);
 		overlay.flash(0.05 + Math.min(0.2, scoring.combo * 0.03));
 		overlay.combo(reward.streakBonus ? `${scoring.combo}× perfect  +${reward.coins}` : `${scoring.combo}× perfect`);
-		if (reward.streakBonus) audio.coin();
+		if (reward.streakBonus) {
+			audio.coin();
+			floatingCoins.spawn(reward.coins, { x: tower.top.x + tower.top.w / 2 + 2.6, y: tower.topY + 1.8, z: tower.top.z });
+		}
 		tower.pulseOutline();
 	} else {
 		audio.place(0);
@@ -203,11 +210,15 @@ function endRun(cause) {
 	economy.addCoins(scoring.coins);
 
 	// Cinematic pull-back so the whole tower is visible behind the end screen.
+	// The plinth's bottom is the hard floor for the view — never pan/zoom past it
+	// or the empty backdrop below the tower would show through.
 	// Tweak REVEAL_PAN_SPEED / sceneSetup.zoomSpeed to change how fast this plays out.
 	const REVEAL_PAN_SPEED = 2.2;
+	const plinthBottomY = -(PLINTH_DEPTH + 0.5) * BLOCK_H;
+	const zoom = sceneSetup.zoomToFit(tower.topY - plinthBottomY);
 	rig.followSpeed = REVEAL_PAN_SPEED;
-	rig.setTarget(tower.topY / 2);
-	sceneSetup.setTargetZoom(sceneSetup.zoomToFit(tower.topY));
+	rig.setTarget(plinthBottomY + sceneSetup.baseViewHalfH * zoom);
+	sceneSetup.setTargetZoom(zoom);
 
 	gameOver.show({
 		score: scoring.score,
@@ -230,6 +241,7 @@ function frame(now) {
 	rig.update(dt);
 	sceneSetup.setStarsY(rig.currentY);
 	sceneSetup.updateZoom(dt);
+	floatingCoins.update(dt);
 	overlay.update(dt);
 	sceneSetup.render();
 
