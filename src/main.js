@@ -1,5 +1,3 @@
-import './styles/ui.css';
-
 import { SceneSetup } from './core/SceneSetup.js';
 import { CameraRig } from './core/CameraRig.js';
 import { Tower, PLINTH_DEPTH } from './game/Tower.js';

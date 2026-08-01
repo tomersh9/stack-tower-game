@@ -11,6 +11,7 @@
 			href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap"
 			rel="stylesheet"
 		/>
+		<link rel="stylesheet" href="/src/styles/ui.css" />
 	</head>
 	<body data-ui="light">
 		<canvas id="scene"></canvas>
@@ -32,19 +33,21 @@
 			</div>
 			<div id="levelup" class="levelup"></div>
 
-			<!-- ── Menu ──────────────────────────────────────────── -->
-			<section id="menu" class="panel panel--menu">
-				<h1 class="logo"><span>Stack</span>Tower</h1>
-				<p class="lede">Drop each block onto the one below. Miss the edge and you lose it. Miss the tower and you're done.</p>
-				<button id="btn-play" class="btn btn--primary">Play</button>
-				<div class="row">
-					<button id="btn-shop" class="btn">Shop</button>
-					<button id="btn-sound" class="btn">Sound on</button>
+			<!-- ── Menu — HUD-style overlay, no panel chrome ───────── -->
+			<section id="menu" class="menu">
+				<h1 class="menu__logo"><span>Stack</span>Tower</h1>
+				<p class="menu__lede">Drop each block onto the one below. Miss the edge and you lose it. Miss the tower and you're done.</p>
+				<div class="menu__actions">
+					<button id="btn-play" class="btn btn--primary">Play</button>
+					<div class="row">
+						<button id="btn-shop" class="btn">Shop</button>
+						<button id="btn-sound" class="btn">Sound on</button>
+					</div>
 				</div>
-				<div class="stats">
-					<div><b id="best">0</b><small>best height</small></div>
-					<div>
-						<b id="coins"><span class="coin-dot"></span>0</b><small>coins</small>
+				<div class="menu__stats">
+					<div class="menu__stat"><span id="best" class="menu__stat-value">0</span><small>best height</small></div>
+					<div class="menu__stat">
+						<span id="coins" class="menu__stat-value"><span class="coin-dot"></span>0</span><small>coins</small>
 					</div>
 				</div>
 			</section>

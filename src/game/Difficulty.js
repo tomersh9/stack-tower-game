@@ -6,7 +6,7 @@ const CONFIG = {
 	maxSpeed: 11.5,
 	baseTolerance: 0.2,
 	minTolerance: 0.06,
-	toleranceDecay: 0.011,
+	toleranceDecay: 0.0095,
 	maxCoinMultiplier: 5,
 };
 
