@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no" />
+		<meta name="theme-color" content="#2b1055" />
+		<title>Stack Tower</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body data-ui="light">
+		<canvas id="scene"></canvas>
+		<div id="flash" class="flash"></div>
+
+		<div id="ui">
+			<!-- ── HUD ───────────────────────────────────────────── -->
+			<div id="hud" class="hud hidden">
+				<button id="hud-sound" class="hud__sound" aria-label="Toggle sound">🔊</button>
+				<div class="hud__score">
+					<span id="score">0</span>
+					<div class="hud__tier"><i id="tierbar"></i></div>
+					<small id="tierlabel">tier 1</small>
+				</div>
+				<div class="hud__coins"><span class="coin-dot"></span><b id="run-coins">0</b></div>
+				<div id="combo" class="combo"></div>
+				<div id="warning" class="warning hidden">width critical</div>
+			</div>
+			<div id="levelup" class="levelup"></div>
+
+			<!-- ── Menu ──────────────────────────────────────────── -->
+			<section id="menu" class="panel panel--menu">
+				<h1 class="logo"><span>Stack</span>Tower</h1>
+				<p class="lede">Drop each block onto the one below. Miss the edge and you lose it. Miss the tower and you're done.</p>
+				<button id="btn-play" class="btn btn--primary">Play</button>
+				<div class="row">
+					<button id="btn-shop" class="btn">Shop</button>
+					<button id="btn-sound" class="btn">Sound on</button>
+				</div>
+				<div class="stats">
+					<div><b id="best">0</b><small>best height</small></div>
+					<div>
+						<b id="coins"><span class="coin-dot"></span>0</b><small>coins</small>
+					</div>
+				</div>
+			</section>
+
+			<!-- ── Shop ──────────────────────────────────────────── -->
+			<section id="shop" class="panel panel--shop hidden">
+				<header class="head">
+					<h2>Shop</h2>
+					<div class="wallet"><span class="coin-dot"></span><b id="shop-coins">0</b></div>
+				</header>
+				<nav class="tabs">
+					<button class="tab is-active" data-tab="skins">Block skins</button>
+					<button class="tab" data-tab="backgrounds">Backdrops</button>
+				</nav>
+				<div id="shop-grid" class="grid"></div>
+				<p id="shop-msg" class="msg"></p>
+				<button id="btn-shop-close" class="btn">Back</button>
+			</section>
+
+			<!-- ── Game over ─────────────────────────────────────── -->
+			<section id="over" class="over hidden">
+				<div id="over-newbest" class="badge hidden">new best</div>
+				<h2 id="over-title" class="over__title">Missed</h2>
+				<p id="over-reason" class="over__reason">The block found nothing to land on.</p>
+				<div class="over__stats">
+					<div class="over__stat"><span id="over-score" class="over__stat-value">0</span><small>height</small></div>
+					<div class="over__stat"><span id="over-best" class="over__stat-value">0</span><small>best</small></div>
+					<div class="over__stat">
+						<span id="over-coins" class="over__stat-value"><span class="coin-dot"></span>0</span><small>earned</small>
+					</div>
+				</div>
+				<div class="over__actions">
+					<button id="btn-again" class="btn btn--primary">Play again</button>
+					<button id="btn-over-menu" class="btn">Menu</button>
+				</div>
+			</section>
+		</div>
+
+		<script type="module" src="/src/main.js"></script>
+	</body>
+</html>
