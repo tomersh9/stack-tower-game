@@ -4,6 +4,7 @@ export const BLOCK_H = 0.62;
 
 // One unit box, reused by every block — scale carries the size.
 const GEO = new THREE.BoxGeometry(1, 1, 1);
+export const BLOCK_GEOMETRY = GEO;
 
 /** Walks the skin palette so each layer shifts colour as the tower rises. */
 export function colorForLayer(skin, index) {
@@ -46,6 +47,11 @@ function materialFor(skin, color) {
 // Exposed so other Three.js scenes (e.g. the shop's mini previews) can build
 // the exact same materials the real tower uses, without duplicating the switch.
 export const createSkinMaterial = materialFor;
+
+// Base white so per-layer palette colour comes purely from InstancedMesh.instanceColor (multiplied in).
+export function createInstancedSkinMaterial(skin) {
+	return materialFor(skin, new THREE.Color(0xffffff));
+}
 
 export function createBlock(w, d, skin, index) {
 	const color = colorForLayer(skin, index);

@@ -75,6 +75,10 @@ export class SceneSetup {
 		this.starGroup.add(this.stars);
 		this.scene.add(this.starGroup);
 
+		this.zoom = 1;
+		this.targetZoom = 1;
+		this.zoomSpeed = 3.2; // higher = snappier zoom-out/in lerp; tweak freely per-instance
+
 		this._onResize = () => this.resize();
 		window.addEventListener('resize', this._onResize);
 		this.resize();
@@ -102,6 +106,28 @@ export class SceneSetup {
 		this.starGroup.position.y = y;
 	}
 
+	/** Frustum half-height (world units, at zoom 1) needed to fit a given world-space height. */
+	zoomToFit(worldHeight, margin = 1.25) {
+		return Math.max(1, (worldHeight * margin) / (this.baseViewHalfH * 2));
+	}
+
+	setTargetZoom(zoom) {
+		this.targetZoom = zoom;
+	}
+
+	/** Snaps zoom immediately, skipping the lerp — used when starting a fresh run. */
+	setZoom(zoom) {
+		this.zoom = zoom;
+		this.targetZoom = zoom;
+		this.resize();
+	}
+
+	updateZoom(dt) {
+		if (Math.abs(this.zoom - this.targetZoom) < 0.001) return;
+		this.zoom += (this.targetZoom - this.zoom) * Math.min(1, dt * this.zoomSpeed);
+		this.resize();
+	}
+
 	resize() {
 		const w = window.innerWidth;
 		const h = window.innerHeight;
@@ -114,6 +140,7 @@ export class SceneSetup {
 		} else if (w < 768) {
 			scale = 0.82; // Tablet: moderately zoomed in
 		}
+		scale *= this.zoom;
 
 		const viewHalfW = this.baseViewHalfW * scale;
 		const viewHalfH = this.baseViewHalfH * scale;

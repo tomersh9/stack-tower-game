@@ -1,11 +1,21 @@
 import * as THREE from 'three';
-import { BLOCK_H, TARGET_OUTLINE_SCALE, createBlock, createTargetOutline, disposeBlock } from './Block.js';
+import {
+	BLOCK_GEOMETRY,
+	BLOCK_H,
+	TARGET_OUTLINE_SCALE,
+	colorForLayer,
+	createBlock,
+	createInstancedSkinMaterial,
+	createTargetOutline,
+	disposeBlock,
+} from './Block.js';
 
 export const BASE_SIZE = 3;
 export const MIN_SIZE = 0.36; // below this the run ends rather than turning into a pixel
 export const WARN_SIZE = 0.75; // "width critical" territory
 export const TRAVEL = 5.4; // how far the moving block swings from centre
 export const PLINTH_DEPTH = 12; // purely decorative layers below the play area
+const MAX_PLACED_LAYERS = 4000; // generous cap on landed blocks — real runs never get close
 
 /**
  * Pure overlap maths — no Three.js, no state. Everything the placement rules
@@ -47,6 +57,8 @@ export class Tower {
 		this.layers = [];
 		this.moving = null;
 		this.skin = null;
+		this.placed = null; // InstancedMesh holding every landed layer for the current run
+		this._dummy = new THREE.Object3D(); // scratch object for composing instance matrices
 		this.outline = createTargetOutline();
 		// Hide outline by default, only show during perfect placement animation
 		this.outline.children.forEach(child => {
@@ -77,6 +89,17 @@ export class Tower {
 		this.skin = skin;
 		this.clear();
 
+		this.placed = new THREE.InstancedMesh(BLOCK_GEOMETRY, createInstancedSkinMaterial(skin), MAX_PLACED_LAYERS);
+		this.placed.count = 0;
+		// Instances live far from the origin as the tower grows; the default bounding
+		// sphere is computed around (0,0,0) only, so culling would drop the whole
+		// mesh once the camera pans away from it. Never cull it.
+		this.placed.frustumCulled = false;
+		this.placed.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+		this.placed.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(MAX_PLACED_LAYERS * 3), 3);
+		this.placed.instanceColor.setUsage(THREE.DynamicDrawUsage);
+		this.group.add(this.placed);
+
 		for (let i = 1; i <= PLINTH_DEPTH; i++) {
 			const mesh = createBlock(BASE_SIZE, BASE_SIZE, skin, -i);
 			mesh.position.set(0, -i * BLOCK_H, 0);
@@ -84,10 +107,7 @@ export class Tower {
 			this.plinth.push(mesh);
 		}
 
-		const base = createBlock(BASE_SIZE, BASE_SIZE, skin, 0);
-		base.position.set(0, 0, 0);
-		this.group.add(base);
-		this.layers.push({ x: 0, z: 0, w: BASE_SIZE, d: BASE_SIZE, y: 0, mesh: base });
+		this.addLayer({ x: 0, z: 0, w: BASE_SIZE, d: BASE_SIZE, y: 0 }, 0);
 		this.updateOutline();
 	}
 
@@ -97,16 +117,33 @@ export class Tower {
 			disposeBlock(m);
 		});
 		this.plinth = [];
-		this.layers.forEach(l => {
-			this.group.remove(l.mesh);
-			disposeBlock(l.mesh);
-		});
+		if (this.placed) {
+			this.group.remove(this.placed);
+			this.placed.material.dispose();
+			this.placed.dispose?.();
+			this.placed = null;
+		}
 		this.layers = [];
 		if (this.moving) {
 			this.group.remove(this.moving.mesh);
 			disposeBlock(this.moving.mesh);
 			this.moving = null;
 		}
+	}
+
+	/** Writes a landed layer's transform/colour into the shared InstancedMesh and records its data. */
+	addLayer(layer, colorIndex) {
+		const i = this.layers.length;
+		this._dummy.position.set(layer.x, layer.y, layer.z);
+		this._dummy.scale.set(layer.w, BLOCK_H, layer.d);
+		this._dummy.rotation.set(0, 0, 0);
+		this._dummy.updateMatrix();
+		this.placed.setMatrixAt(i, this._dummy.matrix);
+		this.placed.setColorAt(i, colorForLayer(this.skin, colorIndex));
+		this.placed.count = i + 1;
+		this.placed.instanceMatrix.needsUpdate = true;
+		this.placed.instanceColor.needsUpdate = true;
+		this.layers.push(layer);
 	}
 
 	spawnMoving({ speed, startFar = false }) {
@@ -201,18 +238,14 @@ export class Tower {
 			return { ...result, type: 'crumbled' };
 		}
 
-		// Snap the kept part into place, reusing the moving mesh.
+		// Snap the kept part into place — lands as an instance, the temp moving mesh is discarded.
 		const layer = {
 			x: m.axis === 'x' ? result.center : top.x,
 			z: m.axis === 'z' ? result.center : top.z,
 			w: m.axis === 'x' ? result.newSize : top.w,
 			d: m.axis === 'z' ? result.newSize : top.d,
 			y: m.y,
-			mesh: m.mesh,
 		};
-		m.mesh.scale.set(layer.w, BLOCK_H, layer.d);
-		m.mesh.position.set(layer.x, layer.y, layer.z);
-		this.layers.push(layer);
 		this.lastAxis = m.axis;
 
 		if (result.type === 'partial') {
@@ -224,6 +257,10 @@ export class Tower {
 			dir[m.axis] = Math.sign(result.delta);
 			this.debris.spawn(cut, dir);
 		}
+
+		this.group.remove(m.mesh);
+		disposeBlock(m.mesh);
+		this.addLayer(layer, m.index);
 
 		this.moving = null;
 		this.updateOutline();

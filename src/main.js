@@ -108,7 +108,9 @@ function buildIdleTower() {
 	tower.reset(economy.equippedSkin());
 	tower.setOutlineVisible(false);
 	tower.spawnMoving({ speed: 2.1 });
+	rig.followSpeed = 3.6;
 	rig.snap(tower.topY);
+	sceneSetup.setZoom(1);
 }
 
 // ── Run lifecycle ───────────────────────────────────────────
@@ -131,7 +133,9 @@ function startRun() {
 	overlay.setWarning(false);
 	overlay.setSoundIcon(audio.muted);
 
+	rig.followSpeed = 3.6;
 	rig.snap(tower.topY);
+	sceneSetup.setZoom(1);
 	state.set(STATES.PLAYING);
 	spawnNext();
 }
@@ -198,6 +202,13 @@ function endRun(cause) {
 	storage.save();
 	economy.addCoins(scoring.coins);
 
+	// Cinematic pull-back so the whole tower is visible behind the end screen.
+	// Tweak REVEAL_PAN_SPEED / sceneSetup.zoomSpeed to change how fast this plays out.
+	const REVEAL_PAN_SPEED = 2.2;
+	rig.followSpeed = REVEAL_PAN_SPEED;
+	rig.setTarget(tower.topY / 2);
+	sceneSetup.setTargetZoom(sceneSetup.zoomToFit(tower.topY));
+
 	gameOver.show({
 		score: scoring.score,
 		best: storage.data.highScore,
@@ -218,6 +229,7 @@ function frame(now) {
 	debris.update(dt);
 	rig.update(dt);
 	sceneSetup.setStarsY(rig.currentY);
+	sceneSetup.updateZoom(dt);
 	overlay.update(dt);
 	sceneSetup.render();
 
