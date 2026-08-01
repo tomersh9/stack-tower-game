@@ -105,6 +105,22 @@ export const BACKGROUNDS = [
 		key: '#e8d4c9',
 		stars: { count: 140, color: '#ffe5b4', opacity: 0.85 },
 	},
+	{
+		id: 'blackout',
+		name: 'Blackout',
+		price: 450,
+		ui: 'light',
+		stops: [
+			[0, '#161821'],
+			[0.6, '#242736'],
+			[1, '#3a3f52'],
+		],
+		fog: '#2a2d3a',
+		sky: '#4a4f63',
+		ground: '#1c1e29',
+		key: '#e8e8e8',
+		stars: { count: 2000, color: '#ffffff', opacity: 1 },
+	},
 ];
 
 export const DEFAULT_BACKGROUND = BACKGROUNDS[0].id;

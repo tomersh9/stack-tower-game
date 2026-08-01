@@ -50,7 +50,17 @@ export const createSkinMaterial = materialFor;
 
 // Base white so per-layer palette colour comes purely from InstancedMesh.instanceColor (multiplied in).
 export function createInstancedSkinMaterial(skin) {
-	return materialFor(skin, new THREE.Color(0xffffff));
+	const material = materialFor(skin, new THREE.Color(0xffffff));
+	// instanceColor (Three's `vColor` varying) only multiplies material.color, not emissive.
+	// Any skin with a non-zero emissive would otherwise show a flat, uncoloured glow on every
+	// instance instead of that layer's tint — patch emissive to follow instanceColor too.
+	material.onBeforeCompile = shader => {
+		shader.fragmentShader = shader.fragmentShader.replace(
+			'#include <emissivemap_fragment>',
+			'#include <emissivemap_fragment>\n#if defined( USE_COLOR ) || defined( USE_INSTANCING_COLOR ) || defined( USE_BATCHING_COLOR )\n\ttotalEmissiveRadiance *= vColor;\n#endif',
+		);
+	};
+	return material;
 }
 
 export function createBlock(w, d, skin, index) {

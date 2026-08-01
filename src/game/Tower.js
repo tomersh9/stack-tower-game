@@ -14,7 +14,7 @@ export const BASE_SIZE = 3;
 export const MIN_SIZE = 0.36; // below this the run ends rather than turning into a pixel
 export const WARN_SIZE = 0.75; // "width critical" territory
 export const TRAVEL = 5.4; // how far the moving block swings from centre
-export const PLINTH_DEPTH = 12; // purely decorative layers below the play area
+export const PLINTH_DEPTH = 6; // purely decorative layers below the play area
 const MAX_PLACED_LAYERS = 4000; // generous cap on landed blocks — real runs never get close
 
 /**

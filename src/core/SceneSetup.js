@@ -16,15 +16,32 @@ function gradientTexture(stops) {
 	return tex;
 }
 
-function starField(max = 220) {
+function starField(max = 2000) {
+	// Matches CameraRig's fixed camera offset direction — the view axis never changes since
+	// the rig only pans vertically, always looking from this same diagonal.
+	const VIEW_DIR = new THREE.Vector3(30, 26, 30).normalize();
+	const WORLD_UP = new THREE.Vector3(0, 1, 0);
+	const right = new THREE.Vector3().crossVectors(VIEW_DIR, WORLD_UP).normalize();
+	const up = new THREE.Vector3().crossVectors(right, VIEW_DIR).normalize();
+
+	// Scatter stars directly in the camera's screen plane (within a generous multiple of the
+	// visible frustum) instead of over a huge sphere. Spherical placement mostly lands stars far
+	// outside what's actually on screen — only the ones whose position happened to line up near
+	// the view axis were ever visible, which is why hundreds were needed before even one showed up.
+	const SPREAD_X = 20;
+	const SPREAD_Y = 24;
+	const DEPTH = 60; // fixed distance behind the tower along the view axis, so stars never render in front of it
+
 	const pos = new Float32Array(max * 3);
+	const p = new THREE.Vector3();
 	for (let i = 0; i < max; i++) {
-		const r = 45 + Math.random() * 30;
-		const theta = Math.random() * Math.PI * 2;
-		const phi = Math.acos(THREE.MathUtils.randFloatSpread(1.4));
-		pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-		pos[i * 3 + 1] = r * Math.cos(phi) * 0.8;
-		pos[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+		const sx = THREE.MathUtils.randFloatSpread(SPREAD_X * 2);
+		const sy = THREE.MathUtils.randFloatSpread(SPREAD_Y * 2);
+		p.set(0, 0, 0).addScaledVector(right, sx).addScaledVector(up, sy).addScaledVector(VIEW_DIR, -DEPTH);
+
+		pos[i * 3] = p.x;
+		pos[i * 3 + 1] = p.y;
+		pos[i * 3 + 2] = p.z;
 	}
 	const geo = new THREE.BufferGeometry();
 	geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));

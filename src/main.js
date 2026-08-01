@@ -72,6 +72,12 @@ new Input(
 	() => audio.unlock(),
 );
 
+// Devtool: press "G" to instantly (re)start a run, from any screen.
+window.addEventListener('keydown', e => {
+	if (e.key.toLowerCase() !== 'g' || e.repeat) return;
+	if (!state.is(STATES.SHOP)) startRun();
+});
+
 // ── Screens ─────────────────────────────────────────────────
 function goMenu() {
 	state.set(STATES.MENU);
