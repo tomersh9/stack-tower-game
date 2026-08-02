@@ -19,7 +19,7 @@ function pickTitle({ score, best, newBest }) {
 }
 
 export class GameOver {
-	constructor({ onAgain, onMenu }) {
+	constructor({ onAgain, onMenu, onShop }) {
 		this.root = document.getElementById('over');
 		this.title = document.getElementById('over-title');
 		this.scoreEl = document.getElementById('over-score');
@@ -28,6 +28,7 @@ export class GameOver {
 		this.badge = document.getElementById('over-newbest');
 
 		document.getElementById('btn-again').addEventListener('click', onAgain);
+		document.getElementById('btn-over-shop').addEventListener('click', onShop);
 		document.getElementById('btn-over-menu').addEventListener('click', onMenu);
 	}
 

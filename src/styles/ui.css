@@ -103,6 +103,45 @@ body {
 	will-change: transform, opacity;
 }
 
+/* ── Devtools (double-tap "J") ──────────────────────────── */
+.devtools {
+	position: fixed;
+	top: 12px;
+	left: 12px;
+	z-index: 999;
+	pointer-events: none;
+	padding: 12px 14px;
+	max-width: 340px;
+	background: rgba(23, 17, 42, 0.82);
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: var(--radius-sm);
+	color: #fff;
+	font-family: var(--mono);
+	font-size: 11px;
+	line-height: 1.6;
+}
+.devtools__fps {
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--gold);
+	margin-bottom: 6px;
+}
+.devtools__row {
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	white-space: nowrap;
+}
+.devtools__row b {
+	color: rgba(255, 255, 255, 0.55);
+	font-weight: 400;
+}
+.devtools__row span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 220px;
+}
+
 /* ── HUD ────────────────────────────────────────────────── */
 .hud {
 	position: fixed;
@@ -366,6 +405,7 @@ body {
 	opacity: 0;
 	animation: overRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.34s forwards;
 }
+
 @keyframes overRise {
 	from {
 		opacity: 0;
@@ -1013,7 +1053,7 @@ body {
 	height: 11px;
 }
 .card.is-equipped .card__meta {
-	color: var(--accent);
+	color: var(--ink-soft);
 	font-weight: 600;
 }
 .card__check {

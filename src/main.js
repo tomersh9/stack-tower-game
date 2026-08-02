@@ -15,6 +15,7 @@ import { Menu } from './ui/Menu.js';
 import { Shop } from './ui/Shop.js';
 import { GameOver } from './ui/GameOver.js';
 import { FloatingCoins } from './ui/FloatingCoins.js';
+import { DevTools } from './ui/DevTools.js';
 
 // ── Wiring ──────────────────────────────────────────────────
 const canvas = document.getElementById('scene');
@@ -28,6 +29,7 @@ const rig = new CameraRig(sceneSetup.camera);
 const debris = new DebrisField(sceneSetup.scene);
 const tower = new Tower(sceneSetup.scene, debris);
 const floatingCoins = new FloatingCoins(sceneSetup.camera);
+const devTools = new DevTools();
 
 const difficulty = new Difficulty();
 const scoring = new Scoring();
@@ -55,6 +57,7 @@ const menu = new Menu({
 
 const gameOver = new GameOver({
 	onAgain: () => startRun(),
+	onShop: () => openShop(STATES.OVER),
 	onMenu: () => goMenu(),
 });
 
@@ -247,6 +250,7 @@ function frame(now) {
 	sceneSetup.updateZoom(dt);
 	floatingCoins.update(dt);
 	overlay.update(dt);
+	devTools.update(dt);
 	sceneSetup.render();
 
 	requestAnimationFrame(frame);

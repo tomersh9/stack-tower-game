@@ -44,10 +44,6 @@ function materialFor(skin, color) {
 	}
 }
 
-// Exposed so other Three.js scenes (e.g. the shop's mini previews) can build
-// the exact same materials the real tower uses, without duplicating the switch.
-export const createSkinMaterial = materialFor;
-
 // Base white so per-layer palette colour comes purely from InstancedMesh.instanceColor (multiplied in).
 export function createInstancedSkinMaterial(skin) {
 	const material = materialFor(skin, new THREE.Color(0xffffff));
@@ -76,7 +72,7 @@ export function disposeBlock(mesh) {
 }
 
 // Frame thickness, in unit-box space (outline sits on a 1x1 face before scaling). Tweak to taste.
-const TARGET_OUTLINE_THICKNESS = 0.025;
+const TARGET_OUTLINE_THICKNESS = 0.04;
 
 // How much bigger than the landing block the outline sits (1 = exact fit). Tweak to taste.
 export const TARGET_OUTLINE_SCALE = 1.15;
@@ -85,7 +81,7 @@ export const TARGET_OUTLINE_SCALE = 1.15;
 export function createTargetOutline() {
 	const t = TARGET_OUTLINE_THICKNESS;
 	const half = 0.5;
-	const m = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35 });
+	const m = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1 });
 	const group = new THREE.Group();
 
 	// Two bars spanning the full width (top/bottom edges) and two spanning the inset height (left/right edges).
