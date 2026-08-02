@@ -24,7 +24,7 @@ export const BACKGROUNDS = [
 	{
 		id: 'meadow',
 		name: 'Meadow',
-		price: 150,
+		price: 350,
 		ui: 'dark',
 		stops: [
 			[0, '#2f6b4f'],
@@ -40,7 +40,7 @@ export const BACKGROUNDS = [
 	{
 		id: 'dawn',
 		name: 'Dawn',
-		price: 200,
+		price: 710,
 		ui: 'dark',
 		stops: [
 			[0, '#f4f6e2'],
@@ -57,7 +57,7 @@ export const BACKGROUNDS = [
 	{
 		id: 'neon',
 		name: 'Neon Night',
-		price: 300,
+		price: 1440,
 		ui: 'light',
 		stops: [
 			[0, '#1b0630'],
@@ -74,7 +74,7 @@ export const BACKGROUNDS = [
 	{
 		id: 'desert-sun',
 		name: 'Desert Sun',
-		price: 350,
+		price: 2920,
 		ui: 'dark',
 		stops: [
 			[0, '#fff5e1'],
@@ -91,7 +91,7 @@ export const BACKGROUNDS = [
 	{
 		id: 'desert-night',
 		name: 'Desert Night',
-		price: 400,
+		price: 5920,
 		ui: 'light',
 		stops: [
 			[0, '#1e3a5f'],
@@ -108,7 +108,7 @@ export const BACKGROUNDS = [
 	{
 		id: 'blackout',
 		name: 'Blackout',
-		price: 450,
+		price: 12000,
 		ui: 'light',
 		stops: [
 			[0, '#161821'],

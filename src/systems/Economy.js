@@ -48,10 +48,10 @@ export class Economy {
 		const item = CATALOG[kind].find(i => i.id === id);
 		if (!item) return { ok: false, reason: 'No such item.' };
 		if (this.owns(kind, id)) return { ok: false, reason: 'Already owned.' };
-		// if (this.coins < item.price) {
-		// 	return { ok: false, reason: `${item.price - this.coins} more coins needed.` };
-		// }
-		// this.storage.data.coins -= item.price;
+		if (this.coins < item.price) {
+			return { ok: false, reason: `${item.price - this.coins} more coins needed.` };
+		}
+		this.storage.data.coins -= item.price;
 		this.storage.data.owned[kind].push(id);
 		this.storage.save();
 		return { ok: true, item };

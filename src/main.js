@@ -43,6 +43,14 @@ const overlay = new Overlay(() => {
 });
 let shopReturn = STATES.MENU;
 let lastTier = 0;
+let gameOverTimer = null;
+
+/** Cancels a pending delayed game-over popup so a stale one can't appear after navigating away. */
+function clearGameOverTimer() {
+	if (gameOverTimer === null) return;
+	clearTimeout(gameOverTimer);
+	gameOverTimer = null;
+}
 
 const menu = new Menu({
 	onPlay: () => startRun(),
@@ -83,6 +91,7 @@ window.addEventListener('keydown', e => {
 
 // ── Screens ─────────────────────────────────────────────────
 function goMenu() {
+	clearGameOverTimer();
 	state.set(STATES.MENU);
 	gameOver.hide();
 	shop.show(false);
@@ -95,6 +104,7 @@ function goMenu() {
 }
 
 function openShop(from) {
+	clearGameOverTimer();
 	shopReturn = from;
 	state.set(STATES.SHOP);
 	menu.show(false);
@@ -125,6 +135,7 @@ function buildIdleTower() {
 
 // ── Run lifecycle ───────────────────────────────────────────
 function startRun() {
+	clearGameOverTimer();
 	audio.unlock();
 	menu.show(false);
 	gameOver.hide();
@@ -227,13 +238,19 @@ function endRun(cause) {
 	rig.setTarget(plinthBottomY + sceneSetup.baseViewHalfH * zoom);
 	sceneSetup.setTargetZoom(zoom);
 
-	gameOver.show({
-		score: scoring.score,
-		best: storage.data.highScore,
-		coins: scoring.coins,
-		newBest,
-		cause,
-	});
+	// Delay the popup so an accidental tap right as the run ends can't instantly dismiss it.
+	const GAME_OVER_DELAY = 1500;
+	clearGameOverTimer();
+	gameOverTimer = setTimeout(() => {
+		gameOverTimer = null;
+		gameOver.show({
+			score: scoring.score,
+			best: storage.data.highScore,
+			coins: scoring.coins,
+			newBest,
+			cause,
+		});
+	}, GAME_OVER_DELAY);
 }
 
 // ── Loop ────────────────────────────────────────────────────

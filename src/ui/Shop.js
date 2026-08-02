@@ -6,9 +6,9 @@ const swatchStyle = (kind, item) => (kind === 'backgrounds' ? cssGradient(item) 
 /** Price → rarity tier, purely cosmetic but drives the card's colour language. */
 function rarityFor(price) {
 	if (price === 0) return { key: 'starter', label: 'Starter' };
-	if (price < 200) return { key: 'common', label: 'Common' };
-	if (price < 500) return { key: 'rare', label: 'Rare' };
-	if (price < 800) return { key: 'epic', label: 'Epic' };
+	if (price < 700) return { key: 'common', label: 'Common' };
+	if (price < 2500) return { key: 'rare', label: 'Rare' };
+	if (price < 9000) return { key: 'epic', label: 'Epic' };
 	return { key: 'legendary', label: 'Legendary' };
 }
 
@@ -104,7 +104,8 @@ export class Shop {
 
 		const equippedSkin = this.economy.equippedSkin();
 
-		this.economy.items(kind).forEach(item => {
+		const items = [...this.economy.items(kind)].sort((a, b) => a.price - b.price);
+		items.forEach(item => {
 			const owned = this.economy.owns(kind, item.id);
 			const equipped = this.economy.isEquipped(kind, item.id);
 			const canAfford = this.economy.coins >= item.price;
