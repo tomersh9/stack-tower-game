@@ -36,18 +36,19 @@
 			<!-- ── Menu — HUD-style overlay, no panel chrome ───────── -->
 			<section id="menu" class="menu">
 				<h1 class="menu__logo"><span>Stack</span>Tower</h1>
-				<p class="menu__lede">Drop each block onto the one below. Miss the edge and you lose it. Miss the tower and you're done.</p>
 				<div class="menu__actions">
-					<button id="btn-play" class="btn btn--primary">Play</button>
+					<p class="menu__hint">Click anywhere to play</p>
+				</div>
+				<div class="menu__stats">
+					<div class="menu__stat"><span id="best" class="menu__stat-value">0</span><small>best score</small></div>
+					<div class="menu__stat">
+						<span id="coins" class="menu__stat-value"><span class="coin-dot"></span>0</span><small>coins</small>
+					</div>
+				</div>
+				<div class="menu__footer">
 					<div class="row">
 						<button id="btn-shop" class="btn">Shop</button>
 						<button id="btn-sound" class="btn">Sound on</button>
-					</div>
-				</div>
-				<div class="menu__stats">
-					<div class="menu__stat"><span id="best" class="menu__stat-value">0</span><small>best height</small></div>
-					<div class="menu__stat">
-						<span id="coins" class="menu__stat-value"><span class="coin-dot"></span>0</span><small>coins</small>
 					</div>
 				</div>
 			</section>

@@ -474,6 +474,47 @@ body {
 	opacity: 0;
 	animation: overRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.24s forwards;
 }
+.menu__footer {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: calc(env(safe-area-inset-bottom) + 20px);
+	display: flex;
+	justify-content: center;
+	margin: 0 auto;
+	opacity: 0;
+	animation: overRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.34s forwards;
+}
+.menu__footer .row {
+	gap: 10px;
+}
+.menu__footer .btn {
+	width: auto;
+	min-height: unset;
+	padding: 8px 16px;
+	font-size: 14px;
+	border-width: 1px;
+}
+.menu__hint {
+	margin: 0 0 4px;
+	font-family: var(--display);
+	/* font-weight: 200; */
+	font-size: clamp(20px, 5.5vw, 28px);
+	font-weight: 200;
+	letter-spacing: 0.09em;
+	color: #fff;
+	text-shadow: 0 2px 16px var(--hud-veil);
+	animation: hintPulse 2.2s ease-in-out infinite;
+}
+@keyframes hintPulse {
+	0%,
+	100% {
+		opacity: 0.55;
+	}
+	50% {
+		opacity: 1;
+	}
+}
 .menu__stats {
 	display: flex;
 	justify-content: center;

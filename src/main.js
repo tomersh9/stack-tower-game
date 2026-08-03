@@ -171,6 +171,10 @@ function spawnNext() {
 }
 
 function handleDrop() {
+	if (state.is(STATES.MENU)) {
+		startRun();
+		return;
+	}
 	if (!state.is(STATES.PLAYING) || !tower.moving) return;
 
 	const heightBefore = tower.height;
